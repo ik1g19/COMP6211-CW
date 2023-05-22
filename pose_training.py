@@ -6,28 +6,7 @@ import os
 import lm_utils
 import math
 import argparse
-
-
-
-
-def append_to_csv(filename, data):
-    with open(filename, 'a', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(data)
-
-def write_to_csv(filename, data):
-    with open(filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(data)
-
-def data_from_csv(filename):
-    d = []
-    with open(filename, 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        for row in reader:
-            float_row = [row[0]] + [float(value) for value in row[1:]]
-            d.append(float_row)
-    return d
+import csv_utils
 
 
 
@@ -101,10 +80,10 @@ def main(arg1, arg2, arg3):
             if front_taken & side_taken:
                 data = [filename] + com_values + front_vals + side_vals
                 if initial:
-                    write_to_csv(csv_path, [data])
+                    csv_utils.write_to_csv(csv_path, [data])
                     initial = False
                 else:
-                    append_to_csv(csv_path, [data])
+                    csv_utils.append_to_csv(csv_path, [data])
                 front_taken = False
                 side_taken = False
 

@@ -5,7 +5,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from mediapipe.tasks.python.components import containers
 import numpy as np
-import csv
+import csv_utils
 import os
 import argparse
 from scipy import interpolate
@@ -35,26 +35,6 @@ DESIRED_HEIGHT = 480
 DESIRED_WIDTH = 480
 
 
-
-
-def write_to_csv(filename, data):
-  with open(filename, 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerows(data)
-
-def append_to_csv(filename, data):
-  with open(filename, 'a', newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerows(data)
-
-def data_from_csv(filename):
-  d = []
-  with open(filename, 'r') as csvfile:
-    reader = csv.reader(csvfile)
-    for row in reader:
-      float_row = [row[0]] + [float(value) for value in row[1:]]
-      d.append(float_row)
-  return d
 
 
 
@@ -239,7 +219,7 @@ def main(arg1, arg2, arg3):
   csv_path = arg2
   front_first = int(arg3)
 
-  data = data_from_csv(csv_path)
+  data = csv_utils.data_from_csv(csv_path)
 
   if (front_first == 1): front = True
   else: front = False
@@ -262,7 +242,7 @@ def main(arg1, arg2, arg3):
 
       front = not front
 
-  write_to_csv(csv_path, data)
+  csv_utils.write_to_csv(csv_path, data)
 
 
 
