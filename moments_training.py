@@ -8,6 +8,7 @@ import numpy as np
 import csv
 import os
 import argparse
+from scipy import interpolate
 
 
 
@@ -105,15 +106,12 @@ def _normalized_to_pixel_coordinates(
 def split_into_segments(filename, com_x, com_y):
   # Create the segmenter
   with python.vision.InteractiveSegmenter.create_from_options(options) as segmenter:
-    x = com_x
-    y = com_y
-
     # Create the MediaPipe Image
     image = mp.Image.create_from_file(filename)
 
     # Retrieve the category masks for the image
     roi = RegionOfInterest(format=RegionOfInterest.Format.KEYPOINT,
-                           keypoint=NormalizedKeypoint(x, y))
+                           keypoint=NormalizedKeypoint(com_x, com_y))
     segmentation_result = segmenter.segment(image, roi)
     category_mask = segmentation_result.category_mask
 
@@ -178,8 +176,57 @@ def hu_moments(img, com_x, com_y):
   # Calculate Hu Moments
   huMoments = cv2.HuMoments(moments)
   huMoments = huMoments.flatten().tolist()
+
   return huMoments
 
+
+
+
+def fourier_descriptors(img, com_x, com_y):
+  silhouette = split_into_segments(img, com_x, com_y)
+
+  # Find contours
+  contours, _ = cv2.findContours(silhouette, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+  # Number of points you want
+  num_points = 100
+
+  if contours:
+    # Get the longest contour
+    contour = max(contours, key=cv2.contourArea)
+
+    # Reshape contour array and separate x and y coordinates
+    contour = contour.squeeze()
+    x = contour[:, 0]
+    y = contour[:, 1]
+
+    # Create parameterization variable t along the contour
+    t = np.arange(len(contour))
+
+    # Create interpolation functions, based on the existing points
+    x_interpolate = interpolate.interp1d(t, x, kind='linear')
+    y_interpolate = interpolate.interp1d(t, y, kind='linear')
+
+    # Create new parameterization variable for the desired number of points
+    tnew = np.linspace(0, len(contour) - 1, num_points)
+
+    # Create new points
+    new_points = np.column_stack((x_interpolate(tnew), y_interpolate(tnew)))
+
+    # Combine the x and y coordinates of new points
+    complex_contour = new_points[:, 0] + 1j * new_points[:, 1]
+
+    # Perform Fourier Transform and get the Fourier Descriptors
+    fourier_descriptors = np.fft.fft(complex_contour)
+
+    # Calculate the absolute values of the Fourier descriptors
+    fourier_descriptors_abs = np.abs(fourier_descriptors)
+
+    # Convert to list
+    fourier_descriptors_list = fourier_descriptors_abs.tolist()
+    return fourier_descriptors_list
+
+  else: return [0] * num_points
 
 
 

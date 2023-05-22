@@ -91,7 +91,7 @@ def front_calcs(lms):
             cross_torso_angle_2]
     #return [com_left_angle, com_right_angle]
     #return [left_shoulder_angle, right_shoulder_angle, left_torso_angle, right_torso_angle]
-    #return []
+    # return []
 
 
 
@@ -117,7 +117,7 @@ def side_calcs(lms):
     #return [height, leg_waist_angle, waist_shoulder_angle, neck_angle, left_arm]
     return [leg_waist_angle, waist_shoulder_angle, neck_angle, neck, nose_left_ear, height]
     #return [neck_angle]
-    #return []
+    return []
 
 
 
