@@ -70,6 +70,14 @@ def resize_and_show(image):
   cv2.imshow("test", img)
   cv2.waitKey(10000)
 
+def resize(image):
+  h, w = image.shape[:2]
+  if h < w:
+    img = cv2.resize(image, (DESIRED_WIDTH, math.floor(h / (w / DESIRED_WIDTH))))
+  else:
+    img = cv2.resize(image, (math.floor(w / (h / DESIRED_HEIGHT)), DESIRED_HEIGHT))
+  return img
+
 
 
 
@@ -139,6 +147,22 @@ def split_into_segments(filename, com_x, com_y):
 
     #print(f'{image_file_name}:')
     #resize_and_show(output_image)
+
+
+    # Find the coordinates of the non-zero pixels in the mask
+    points = cv2.findNonZero(output_image)
+
+    if points is not None:
+      # Find the bounding box coordinates of the contours
+      _x, _y, _w, _h = cv2.boundingRect(points)
+      # Crop the image to the bounding box
+      output_image = output_image[_y:_y + _h, _x:_x + _w]
+
+      # Calculate the height of the top 1/10th portion
+      height, width = output_image.shape
+      crop_height = int(height / 6)
+      # Crop the image to the top portion
+      output_image = output_image[:crop_height, :]
 
     return output_image
 

@@ -129,8 +129,24 @@ def split_into_segments(filename):
     # cv2.circle(output_image, keypoint_px, thickness + 5, (0, 0, 0), radius)
     # cv2.circle(output_image, keypoint_px, thickness, (255, 255, 255), radius)
 
-    #print(f'{image_file_name}:')
-    resize_and_show(output_image)
+    # Find the coordinates of the non-zero pixels in the mask
+    points = cv2.findNonZero(output_image)
+
+    if points is not None:
+      # Find the bounding box coordinates of the contours
+      _x, _y, _w, _h = cv2.boundingRect(points)
+      # Crop the image to the bounding box
+      output_image = output_image[_y:_y + _h, _x:_x + _w]
+
+      # Calculate the height of the top 1/10th portion
+      height, width = output_image.shape
+      crop_height = int(height / 6)
+      # Crop the image to the top portion
+      output_image = output_image[:crop_height, :]
+
+    filename = filename.split('/')
+    print(filename[-1])
+    #cv2.imwrite('./silhouettes/head_test/' + filename[-1], output_image)
 
     return output_image
 
@@ -155,4 +171,4 @@ def hu_moments(img):
 
 
 
-huMoments = hu_moments('./data/test/DSC00171.JPG')
+huMoments = hu_moments('./data/training/016z052ps.JPG')
