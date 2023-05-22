@@ -1,7 +1,7 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import knn
 import csv_utils
-
 
 
 def calculate_eer(fars, frrs, thresholds):
@@ -57,3 +57,16 @@ frrs = np.array(frrs)
 eer = calculate_eer(fars, frrs, thresholds)
 
 print("Equal Error Rate (EER) is at threshold: " + str(eer))
+
+# Plotting the FAR and FRR against thresholds
+plt.figure(figsize=(10, 6))
+plt.plot(thresholds, fars, label='FAR')
+plt.plot(thresholds, frrs, label='FRR')
+plt.scatter(eer, fars[np.argmin(abs(thresholds - eer))], color='red')  # mark EER on FAR curve
+plt.scatter(eer, frrs[np.argmin(abs(thresholds - eer))], color='red')  # mark EER on FRR curve
+plt.xlabel('Thresholds')
+plt.ylabel('Error Rates')
+plt.title('FAR and FRR at different thresholds')
+plt.legend()
+plt.grid(True)
+plt.show()

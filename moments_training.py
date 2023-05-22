@@ -219,7 +219,7 @@ def main(arg1, arg2, arg3):
   csv_path = arg2
   front_first = int(arg3)
 
-  data = csv_utils.data_from_csv(csv_path)
+  data = csv_utils.data_from_csv_with_label(csv_path)
 
   if (front_first == 1): front = True
   else: front = False

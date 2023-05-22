@@ -26,7 +26,7 @@ def knn(data, query, k, distance_fn, choice_fn):
 
     # 7. If regression (choice_fn = mean), return the average of the K labels
     # 8. If classification (choice_fn = mode), return the mode of the K labels
-    return k_nearest_labels, choice_fn(k_nearest_labels)
+    return k_nearest_distances_and_indices, choice_fn(k_nearest_labels)
 
 
 def mode(labels):
