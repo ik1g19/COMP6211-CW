@@ -28,7 +28,9 @@ def front_calcs(lms):
 
     avg_torso = (lm_distance(lms,12,24) + lm_distance(lms,11,23)) / 2
 
-    total_torso = lm_distance(lms,12,24) + lm_distance(lms,11,23)
+    left_torso = lm_distance(lms,12,24)
+
+    right_torso = lm_distance(lms,11,23)
 
     avg_leg = (right_leg + left_leg) / 2
 
@@ -74,9 +76,22 @@ def front_calcs(lms):
 
     com_right_angle = calculate_angle_3_(lms, 11, center_x, center_y, 23)
 
-    #return [shoulder_width, center_y, shoulder_nose_height, shoulder_to_waist]
+    ear_ear = lm_distance(lms, 8, 7)
+
+    cross_torso = lm_distance(lms, 12, 23)
+
+    cross_torso_2 = lm_distance(lms, 11, 24)
+
+    cross_torso_angle = calculate_angle(lms, 12, 23)
+
+    cross_torso_angle_2 = calculate_angle(lms, 11, 24)
+
+    return [shoulder_width, left_leg, right_leg, waist, knee_to_knee, ear_ear,
+            left_torso, right_torso, cross_torso, cross_torso_2, cross_torso_angle,
+            cross_torso_angle_2]
     #return [com_left_angle, com_right_angle]
-    return [left_shoulder_angle, right_shoulder_angle, left_torso_angle, right_torso_angle]
+    #return [left_shoulder_angle, right_shoulder_angle, left_torso_angle, right_torso_angle]
+    #return []
 
 
 
@@ -84,7 +99,7 @@ def front_calcs(lms):
 def side_calcs(lms):
     left_arm = lm_distance(lms,11, 13) + lm_distance(lms,13, 15)
 
-    height = lm_distance(lms, 0, 28)
+    height = lm_distance(lms, 11, 27)
 
     arm_to_height = left_arm / height
 
@@ -96,11 +111,13 @@ def side_calcs(lms):
 
     neck = lm_distance(lms, 11, 0)
 
+    nose_left_ear = lm_distance(lms, 0, 7)
+
     #return [height, arm_to_height]
     #return [height, leg_waist_angle, waist_shoulder_angle, neck_angle, left_arm]
-    #return [leg_waist_angle, waist_shoulder_angle, neck_angle, neck]
+    return [leg_waist_angle, waist_shoulder_angle, neck_angle, neck, nose_left_ear, height]
     #return [neck_angle]
-    return []
+    #return []
 
 
 
